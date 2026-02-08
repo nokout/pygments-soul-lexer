@@ -95,11 +95,11 @@ class TestSOULLexer:
         string_tokens = [t for t in tokens if t[0] == String.Single]
         assert (String.Single, "''") in string_tokens
 
-    def test_case_insensitive_keywords(self, lexer):
+    @pytest.mark.parametrize("keyword", ["IF", "if", "If", "iF"])
+    def test_case_insensitive_keyword(self, lexer, keyword):
         """Test that keywords work regardless of case."""
-        for keyword in ["IF", "if", "If", "iF"]:
-            tokens = self.get_tokens(lexer, keyword)
-            assert tokens[0][0] == Keyword
+        tokens = self.get_tokens(lexer, keyword)
+        assert tokens[0][0] == Keyword
 
     def test_multi_word_keyword_for_each_record(self, lexer):
         """Test multi-word keyword FOR EACH RECORD."""
@@ -136,20 +136,20 @@ class TestSOULLexer:
         tokens = self.get_tokens(lexer, "1.23E+10")
         assert any(t[0] == Number.Float for t in tokens)
 
-    def test_operator_symbolic(self, lexer):
+    @pytest.mark.parametrize("op", ["+", "-", "*", "/", "=", "<", ">", "<=", ">=", "<>"])
+    def test_operator_symbolic(self, lexer, op):
         """Test symbolic operators."""
-        for op in ["+", "-", "*", "/", "=", "<", ">", "<=", ">=", "<>"]:
-            tokens = self.get_tokens(lexer, op)
-            # Filter out whitespace tokens (trailing newline)
-            non_ws_tokens = [t for t in tokens if t[0] != Whitespace]
-            assert len(non_ws_tokens) > 0
-            assert non_ws_tokens[0][0] == Operator
+        tokens = self.get_tokens(lexer, op)
+        # Filter out whitespace tokens (trailing newline)
+        non_ws_tokens = [t for t in tokens if t[0] != Whitespace]
+        assert len(non_ws_tokens) > 0
+        assert non_ws_tokens[0][0] == Operator
 
-    def test_operator_word(self, lexer):
+    @pytest.mark.parametrize("op", ["AND", "OR", "NOT", "EQ", "NE", "GT", "LT"])
+    def test_operator_word(self, lexer, op):
         """Test word operators."""
-        for op in ["AND", "OR", "NOT", "EQ", "NE", "GT", "LT"]:
-            tokens = self.get_tokens(lexer, op)
-            assert tokens[0][0] == Operator.Word
+        tokens = self.get_tokens(lexer, op)
+        assert tokens[0][0] == Operator.Word
 
     def test_macro_directive(self, lexer):
         """Test macro directives like !DEF."""
@@ -195,29 +195,29 @@ class TestSOULLexer:
         # Line continuation should be treated as whitespace
         assert any(t[0] == Whitespace and "-" in t[1] for t in tokens)
 
-    def test_declaration_keywords(self, lexer):
+    @pytest.mark.parametrize("keyword", ["DECLARE", "IMAGE", "CLASS", "FUNCTION", "PROCEDURE"])
+    def test_declaration_keyword(self, lexer, keyword):
         """Test declaration keywords."""
-        for keyword in ["DECLARE", "IMAGE", "CLASS", "FUNCTION", "PROCEDURE"]:
-            tokens = self.get_tokens(lexer, keyword)
-            assert tokens[0][0] == Keyword.Declaration
+        tokens = self.get_tokens(lexer, keyword)
+        assert tokens[0][0] == Keyword.Declaration
 
-    def test_type_keywords(self, lexer):
+    @pytest.mark.parametrize("keyword", ["FIXED", "FLOAT", "STRING", "ARRAY"])
+    def test_type_keyword(self, lexer, keyword):
         """Test type keywords."""
-        for keyword in ["FIXED", "FLOAT", "STRING", "ARRAY"]:
-            tokens = self.get_tokens(lexer, keyword)
-            assert tokens[0][0] == Keyword.Type
+        tokens = self.get_tokens(lexer, keyword)
+        assert tokens[0][0] == Keyword.Type
 
-    def test_visibility_keywords(self, lexer):
+    @pytest.mark.parametrize("keyword", ["PUBLIC", "PRIVATE", "SHARED", "STATIC"])
+    def test_visibility_keyword(self, lexer, keyword):
         """Test visibility keywords."""
-        for keyword in ["PUBLIC", "PRIVATE", "SHARED", "STATIC"]:
-            tokens = self.get_tokens(lexer, keyword)
-            assert tokens[0][0] == Keyword.Declaration
+        tokens = self.get_tokens(lexer, keyword)
+        assert tokens[0][0] == Keyword.Declaration
 
-    def test_database_keywords(self, lexer):
+    @pytest.mark.parametrize("keyword", ["FIND", "STORE", "UPDATE", "DELETE", "FDR", "FRN"])
+    def test_database_keyword(self, lexer, keyword):
         """Test database operation keywords."""
-        for keyword in ["FIND", "STORE", "UPDATE", "DELETE", "FDR", "FRN"]:
-            tokens = self.get_tokens(lexer, keyword)
-            assert tokens[0][0] == Keyword
+        tokens = self.get_tokens(lexer, keyword)
+        assert tokens[0][0] == Keyword
 
     @pytest.mark.parametrize(
         "keyword",

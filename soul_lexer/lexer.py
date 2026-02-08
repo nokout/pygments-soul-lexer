@@ -37,6 +37,22 @@ class SOULLexer(RegexLexer):
 
     flags = re.IGNORECASE | re.MULTILINE
 
+    def analyse_text(text):
+        """Return confidence that this text is SOUL code."""
+        result = 0.0
+        # Strong indicators
+        if re.search(r'^\s*\*', text, re.MULTILINE):
+            result += 0.1  # Line comments
+        if re.search(r'%\w+', text):
+            result += 0.2  # Percent variables
+        if re.search(r'\$\w+', text):
+            result += 0.1  # Dollar functions
+        if re.search(r'\bFOR\s+EACH\s+RECORD\b', text, re.IGNORECASE):
+            result += 0.4  # Very SOUL-specific
+        if re.search(r'/\?.*\?/', text, re.DOTALL):
+            result += 0.2  # Block comments
+        return min(result, 1.0)
+
     tokens = {
         "root": [
             # Comments - line comments must be first non-blank on line

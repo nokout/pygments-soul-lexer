@@ -8,6 +8,5 @@ build/
 .pytest_cache/
 .coverage
 htmlcov/
-html_examples/
 .pypirc
 MANIFEST.info

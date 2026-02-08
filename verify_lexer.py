@@ -6,8 +6,10 @@ Generates HTML output for all example files.
 
 import sys
 from pathlib import Path
+
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
+
 from soul_lexer import SOULLexer
 
 
@@ -28,7 +30,7 @@ def generate_html_examples():
     for soul_file in examples_dir.glob("*.soul"):
         print(f"Processing {soul_file.name}...")
 
-        with open(soul_file, "r") as f:
+        with open(soul_file) as f:
             code = f.read()
 
         html = highlight(code, lexer, formatter)
@@ -40,7 +42,7 @@ def generate_html_examples():
         print(f"  ✓ Generated {output_file}")
 
     print(f"\n✓ All examples generated in {output_dir}/")
-    print(f"  Open the HTML files in a browser to view the highlighted code.")
+    print("  Open the HTML files in a browser to view the highlighted code.")
 
 
 def verify_lexer():
@@ -75,7 +77,7 @@ def verify_lexer():
     END IF
     """
 
-    from pygments.token import Comment, Keyword, Name, String, Operator
+    from pygments.token import Comment, Keyword, Name, Operator, String
 
     tokens = list(lexer.get_tokens(test_code))
     token_types = {t[0] for t in tokens}

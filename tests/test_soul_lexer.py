@@ -2,10 +2,9 @@
 Comprehensive test suite for the SOUL Pygments lexer.
 """
 
-import pytest
-from pathlib import Path
 from glob import glob
 
+import pytest
 from pygments.token import (
     Comment,
     Error,
@@ -276,7 +275,6 @@ class TestSOULLexer:
         """
         tokens = self.get_tokens(lexer, code)
 
-
         error_tokens = [t for t in tokens if t[0] == Error]
         assert len(error_tokens) == 0
 
@@ -364,10 +362,9 @@ def test_example_files_produce_no_errors(example_file):
     """Test that example .soul files tokenize without Error tokens."""
     with open(example_file) as f:
         code = f.read()
-    
+
     lexer = SOULLexer()
     tokens = list(lexer.get_tokens(code))
     error_tokens = [t for t in tokens if t[0] == Error]
-    
-    assert len(error_tokens) == 0, \
-        f"Error tokens found in {example_file}: {error_tokens}"
+
+    assert len(error_tokens) == 0, f"Error tokens found in {example_file}: {error_tokens}"

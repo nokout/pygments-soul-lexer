@@ -4,7 +4,8 @@ Pygments lexer for SOUL (System Online User Language).
 SOUL is the 4GL programming language for Rocket Software's Model 204 database system.
 """
 
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
+
 from soul_lexer.lexer import SOULLexer
 
 try:

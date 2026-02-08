@@ -9,3 +9,5 @@ build/
 .coverage
 htmlcov/
 html_examples/
+.pypirc
+MANIFEST.info

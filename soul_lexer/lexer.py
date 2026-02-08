@@ -7,7 +7,7 @@ operations, object-oriented programming, and text interpolation blocks.
 """
 
 import re
-from pygments.lexer import RegexLexer, bygroups, include, words
+from pygments.lexer import RegexLexer, bygroups, words
 from pygments.token import (
     Comment,
     Keyword,
@@ -16,7 +16,6 @@ from pygments.token import (
     Operator,
     Punctuation,
     String,
-    Text,
     Whitespace,
 )
 

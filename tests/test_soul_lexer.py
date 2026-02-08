@@ -3,8 +3,10 @@ Comprehensive test suite for the SOUL Pygments lexer.
 """
 
 import pytest
+
 from pygments.token import (
     Comment,
+    Error,
     Keyword,
     Name,
     Number,
@@ -271,7 +273,7 @@ class TestSOULLexer:
         END IF
         """
         tokens = self.get_tokens(lexer, code)
-        from pygments.token import Error
+
 
         error_tokens = [t for t in tokens if t[0] == Error]
         assert len(error_tokens) == 0

@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Pygments lexer for SOUL (System Online User Language), the 4GL language for Rocket Software's Model 204 database"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
+license = {file = "LICENSE"}
 authors = [
     {name = "nokout", email = "nokout@users.noreply.github.com"}
 ]
@@ -26,9 +26,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Text Processing :: Markup",
+    "Framework :: Pygments",
+
 ]
 dependencies = [
-    "pygments>=2.15.0",
+    "pygments>=2.15.0,<3.0.0",
 ]
 
 [project.optional-dependencies]
@@ -48,3 +50,7 @@ soul = "soul_lexer.lexer:SOULLexer"
 
 [tool.hatch.build.targets.wheel]
 packages = ["soul_lexer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"

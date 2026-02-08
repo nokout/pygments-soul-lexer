@@ -6,7 +6,7 @@ It features percent-prefixed variables, dollar-prefixed built-in functions, data
 operations, object-oriented programming, and text interpolation blocks.
 """
 
-import re
+import re  # Used for IGNORECASE and MULTILINE flags, plus analyse_text patterns
 from pygments.lexer import RegexLexer, bygroups, words
 from pygments.token import (
     Comment,
@@ -321,9 +321,7 @@ class SOULLexer(RegexLexer):
             ),
 
             # Symbolic operators
-            (r"<>", Operator),
-            (r">=", Operator),
-            (r"<=", Operator),
+            (r"<>|>=|<=", Operator),
             (r"[+\-*/=<>]", Operator),
 
             # Punctuation
@@ -382,9 +380,7 @@ class SOULLexer(RegexLexer):
             (r"%[a-z_]\w*", Name.Variable),
 
             # Operators
-            (r"<>", Operator),
-            (r">=", Operator),
-            (r"<=", Operator),
+            (r"<>|>=|<=", Operator),
             (r"[+\-*/=<>]", Operator),
 
             # Punctuation

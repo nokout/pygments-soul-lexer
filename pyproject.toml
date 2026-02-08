@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pygments-soul-lexer"
+version = "0.1.0"
+description = "Pygments lexer for SOUL (System Online User Language), the 4GL language for Rocket Software's Model 204 database"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "nokout", email = "nokout@users.noreply.github.com"}
+]
+keywords = ["pygments", "lexer", "soul", "model204", "syntax-highlighting"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Markup",
+]
+dependencies = [
+    "pygments>=2.15.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/nokout/pygments-soul-lexer"
+Repository = "https://github.com/nokout/pygments-soul-lexer"
+Issues = "https://github.com/nokout/pygments-soul-lexer/issues"
+Documentation = "https://github.com/nokout/pygments-soul-lexer#readme"
+
+[project.entry-points."pygments.lexers"]
+soul = "soul_lexer.lexer:SOULLexer"
+
+[tool.hatch.build.targets.wheel]
+packages = ["soul_lexer"]

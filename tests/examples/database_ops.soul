@@ -1,0 +1,76 @@
+* Database Operations in SOUL
+* Demonstrates Model 204 database interaction
+
+* Find all records matching criteria
+FIND ALL RECORDS IN EMPLOYEES WHERE
+    DEPT = 'SALES' AND
+    SALARY GT 50000
+END FIND
+
+* Process each found record
+FOR EACH RECORD IN EMPLOYEES
+    * Field variables use double percent
+    %%NAME = $Proper(%%NAME)
+    %%LAST_REVIEW = $Curdate
+
+    * Print field values
+    PRINT 'Employee: ' WITH %%NAME
+    PRINT 'Salary: ' WITH %%SALARY
+
+    * Update the record
+    UPDATE RECORD
+        %%LAST_UPDATED = $Curdate
+        %%STATUS = 'REVIEWED'
+    END UPDATE
+END FOR
+
+* Count records
+%TOTAL_COUNT = $COUNT IN EMPLOYEES
+
+* Find with complex criteria
+FD ALL RECORDS IN CUSTOMERS WHERE
+    (STATUS EQ 'ACTIVE' OR STATUS EQ 'PENDING') AND
+    BALANCE GT 1000 AND
+    CITY IS NOT LIKE 'NEW%'
+END FIND
+
+* Process each value of multi-valued field
+FR IN ORDERS
+    FEO %%LINE_ITEMS
+        %ITEM_CODE = %%LINE_ITEMS
+        %PRICE = $GetPrice(%ITEM_CODE)
+        PRINT %ITEM_CODE WITH %PRICE
+    END FOR
+END FOR
+
+* Store new record
+STORE RECORD IN EMPLOYEES
+    %%NAME = %NEW_NAME
+    %%DEPT = %NEW_DEPT
+    %%HIRE_DATE = $Curdate
+    %%SALARY = %NEW_SALARY
+    %%STATUS = 'ACTIVE'
+END STORE
+
+* Delete records
+FD ALL RECORDS IN TEMP_TABLE WHERE
+    CREATED_DATE LT $Date('2025-01-01')
+END FIND
+
+FOR EACH RECORD
+    DELETE RECORD
+END FOR
+
+* Sorted retrieval
+FD ALL RECORDS IN PRODUCTS
+    ORDERED BY CATEGORY, PRICE
+END FIND
+
+* Record counting with PAI (Print All Information)
+PAI IN EMPLOYEES WHERE STATUS = 'ACTIVE'
+
+* Database abbreviations
+FDR IN FILE WHERE KEY = %SEARCH_KEY  /? Find Direct Record ?/
+FRN                                   /? For Record Number ?/
+    PRINT %%NAME
+END FOR

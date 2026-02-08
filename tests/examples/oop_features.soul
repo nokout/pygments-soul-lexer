@@ -1,0 +1,113 @@
+* Object-Oriented Programming in SOUL
+* Demonstrates classes, objects, and methods
+
+* Define a class
+CLASS Employee
+    * Properties
+    PUBLIC SHARED %COMPANY_NAME IS STRING LEN 50
+    PRIVATE %NAME IS STRING LEN 50
+    PRIVATE %ID IS FIXED
+    PRIVATE %SALARY IS FLOAT
+
+    * Constructor
+    CONSTRUCTOR(%EMP_NAME IS STRING, %EMP_ID IS FIXED)
+        %NAME = %EMP_NAME
+        %ID = %EMP_ID
+        %SALARY = 0
+    END CONSTRUCTOR
+
+    * Public method
+    PUBLIC FUNCTION GetName() IS STRING
+        RETURN %NAME
+    END FUNCTION
+
+    * Method with parameters
+    PUBLIC SUBROUTINE SetSalary(%NEW_SALARY IS FLOAT)
+        IF %NEW_SALARY GT 0 THEN
+            %SALARY = %NEW_SALARY
+        END IF
+    END SUBROUTINE
+
+    * Method that returns value
+    PUBLIC FUNCTION GetAnnualTax() IS FLOAT
+        %TAX_RATE = 0.28
+        RETURN %SALARY * %TAX_RATE
+    END FUNCTION
+
+    * Method using object methods
+    PUBLIC FUNCTION GetSummary() IS STRING
+        %SUMMARY = 'Employee: ' WITH %NAME
+        %SUMMARY = %SUMMARY WITH ', ID: ' WITH $String(%ID)
+        RETURN %SUMMARY
+    END FUNCTION
+
+    * Static method
+    PUBLIC SHARED FUNCTION GetCompanyName() IS STRING
+        RETURN %COMPANY_NAME
+    END FUNCTION
+END CLASS
+
+* Define another class
+CLASS Manager EXTENDS Employee
+    PRIVATE %DEPARTMENT IS STRING LEN 30
+    PRIVATE %NUM_REPORTS IS FIXED
+
+    CONSTRUCTOR(%NAME IS STRING, %ID IS FIXED, %DEPT IS STRING)
+        * Call parent constructor
+        SUPER.CONSTRUCTOR(%NAME, %ID)
+        %DEPARTMENT = %DEPT
+        %NUM_REPORTS = 0
+    END CONSTRUCTOR
+
+    PUBLIC SUBROUTINE AddReport()
+        %NUM_REPORTS = %NUM_REPORTS + 1
+    END SUBROUTINE
+
+    PUBLIC FUNCTION GetDepartment() IS STRING
+        RETURN %DEPARTMENT
+    END FUNCTION
+END CLASS
+
+* Using objects
+%EMP1 = NEW Employee('Alice Smith', 1001)
+%EMP2 = NEW Employee('Bob Jones', 1002)
+
+* Call object methods
+%EMP1:SetSalary(75000)
+%EMP2:SetSalary(68000)
+
+* Get values from object methods
+%NAME1 = %EMP1:GetName()
+%TAX1 = %EMP1:GetAnnualTax()
+
+PRINT %NAME1 WITH ' tax: ' WITH %TAX1
+
+* Access image items (similar syntax)
+IMAGE PERSON
+    NAME IS STRING LEN 50
+    AGE IS FIXED
+    ADDRESS IS STRING LEN 100
+END IMAGE
+
+%PERSON_IMG = NEW PERSON
+%PERSON_IMG:NAME = 'Charlie Brown'
+%PERSON_IMG:AGE = 30
+
+* Print image item
+PRINT 'Name: ' WITH %PERSON_IMG:NAME
+PRINT 'Age: ' WITH %PERSON_IMG:AGE
+
+* Create manager object
+%MGR = NEW Manager('Diana Prince', 2001, 'Engineering')
+%MGR:SetSalary(95000)
+%MGR:AddReport()
+
+%MGR_DEPT = %MGR:GetDepartment()
+PRINT 'Manager dept: ' WITH %MGR_DEPT
+
+* Exception handling with objects
+TRY
+    %RESULT = %EMP1:GetAnnualTax()
+CATCH %EX
+    PRINT 'Error: ' WITH %EX:ToString()
+END TRY

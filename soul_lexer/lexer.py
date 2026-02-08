@@ -1,0 +1,383 @@
+"""
+Pygments lexer for SOUL (System Online User Language).
+
+SOUL is the 4GL programming language for Rocket Software's Model 204 database system.
+It features percent-prefixed variables, dollar-prefixed built-in functions, database
+operations, object-oriented programming, and text interpolation blocks.
+"""
+
+import re
+from pygments.lexer import RegexLexer, bygroups, include, words
+from pygments.token import (
+    Comment,
+    Keyword,
+    Name,
+    Number,
+    Operator,
+    Punctuation,
+    String,
+    Text,
+    Whitespace,
+)
+
+__all__ = ["SOULLexer"]
+
+
+class SOULLexer(RegexLexer):
+    """
+    Lexer for SOUL (System Online User Language), the 4GL language for Model 204.
+
+    .. versionadded:: 0.1.0
+    """
+
+    name = "SOUL"
+    aliases = ["soul", "model204"]
+    filenames = ["*.soul", "*.m204", "*.proc"]
+    mimetypes = ["text/x-soul"]
+    url = "https://m204wiki.rocketsoftware.com/"
+
+    flags = re.IGNORECASE | re.MULTILINE
+
+    tokens = {
+        "root": [
+            # Comments - line comments must be first non-blank on line
+            # Check both at start and after newlines (handles multiple blank lines too)
+            (r"^([ \t]*)(\*.+)$", bygroups(Whitespace, Comment.Single)),
+            (r"(\n+)([ \t]*)(\*.+)$", bygroups(Whitespace, Whitespace, Comment.Single)),
+
+            # Whitespace and line continuation
+            # Line continuation must not be at the very start
+            (r"(?<!^)-\s*\n", Whitespace),  # Line continuation
+            # Don't consume newlines if followed by optional spaces/tabs and asterisk (comment)
+            (r"[ \t]+", Whitespace),  # Non-newline whitespace
+            (r"\n(?![ \t]*\*)", Whitespace),  # Newline not followed by comment
+
+            # Block comments
+            (r"/\?", Comment.Multiline, "block-comment"),
+
+            # Macro directives
+            (
+                r"^(\s*)(!)(DEF|UNDEF|IFDEF|IFNDEF|ELSE|ENDIF|IF|THEN)\b",
+                bygroups(Whitespace, Comment.Preproc, Comment.Preproc),
+            ),
+
+            # Labels (must be at start of line)
+            (
+                r"^(\s*)([a-z_]\w*)(:)(\s)",
+                bygroups(Whitespace, Name.Label, Punctuation, Whitespace),
+            ),
+
+            # TEXT and HTML blocks
+            (r"\b(TEXT)\b", Keyword, "text-block"),
+            (r"\b(HTML)\b", Keyword, "html-block"),
+
+            # Strings
+            (r"'", String.Single, "string"),
+
+            # Dummy strings - ordered by specificity
+            (r"\?\?[^\s]+", String.Interpol),  # ??prompt
+            (r"\?\$[^\s]+", String.Interpol),  # ?$prompt
+            (r"\?&[a-z_]\w*", String.Interpol),  # ?&global
+            (r"\?![a-z_]\w*", String.Interpol),  # ?!macro_var
+
+            # Numbers
+            (r"[0-9]+\.[0-9]+([eE][+-]?[0-9]+)?", Number.Float),  # Float
+            (r"[0-9]+[eE][+-]?[0-9]+", Number.Float),  # Scientific notation
+            (r"[0-9]+", Number.Integer),  # Integer
+
+            # $Functions (built-in functions)
+            (r"\$[a-z_]\w*", Name.Builtin),
+
+            # Variables - most specific first
+            # Object method calls: %OBJ:METHOD(
+            (
+                r"(%[a-z_]\w*)(:)([a-z_]\w*)(\()",
+                bygroups(Name.Variable, Punctuation, Name.Function, Punctuation),
+            ),
+            # Image items: %IMG:ITEM
+            (
+                r"(%[a-z_]\w*)(:)([a-z_]\w*)",
+                bygroups(Name.Variable, Punctuation, Name.Attribute),
+            ),
+            # Field variables (double percent)
+            (r"%%[a-z_]\w*", Name.Variable.Global),
+            # Regular variables
+            (r"%[a-z_]\w*", Name.Variable),
+
+            # Multi-word keywords - longest first to avoid partial matches
+            (r"\b(FOR\s+EACH\s+RECORD)\b", Keyword),
+            (r"\b(FOR\s+EACH\s+VALUE)\b", Keyword),
+            (r"\b(FOR\s+EACH\s+OCCURRENCE)\b", Keyword),
+            (r"\b(FIND\s+ALL\s+RECORDS)\b", Keyword),
+            (r"\b(FIND\s+ALL\s+VALUES)\b", Keyword),
+            (r"\b(STORE\s+RECORD)\b", Keyword),
+            (r"\b(UPDATE\s+RECORD)\b", Keyword),
+            (r"\b(DELETE\s+RECORD)\b", Keyword),
+
+            # END statements
+            (r"\b(END\s+IF)\b", Keyword),
+            (r"\b(END\s+FOR)\b", Keyword),
+            (r"\b(END\s+REPEAT)\b", Keyword),
+            (r"\b(END\s+CLASS)\b", Keyword),
+            (r"\b(END\s+IMAGE)\b", Keyword),
+            (r"\b(END\s+PROCEDURE)\b", Keyword),
+            (r"\b(END\s+FUNCTION)\b", Keyword),
+            (r"\b(END\s+SUBROUTINE)\b", Keyword),
+            (r"\b(END\s+TEXT)\b", Keyword),
+            (r"\b(END\s+HTML)\b", Keyword),
+            (r"\b(END\s+TRY)\b", Keyword),
+            (r"\b(END\s+CATCH)\b", Keyword),
+            (r"\b(END\s+BLOCK)\b", Keyword),
+
+            # Other multi-word constructs
+            (r"\b(VARIABLES\s+ARE)\b", Keyword.Declaration),
+            (r"\b(REPEAT\s+WHILE)\b", Keyword),
+            (r"\b(REPEAT\s+UNTIL)\b", Keyword),
+
+            # Word operators with multi-word forms
+            (r"\b(IS\s+NOT\s+LIKE)\b", Operator.Word),
+            (r"\b(IS\s+LIKE)\b", Operator.Word),
+            (r"\b(IS\s+NOT\s+PRESENT)\b", Operator.Word),
+            (r"\b(IS\s+PRESENT)\b", Operator.Word),
+
+            # Declaration keywords
+            (
+                words(
+                    (
+                        "DECLARE",
+                        "IMAGE",
+                        "CLASS",
+                        "ENUMERATION",
+                        "PROCEDURE",
+                        "FUNCTION",
+                        "SUBROUTINE",
+                        "PROPERTY",
+                        "CONSTRUCTOR",
+                    ),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Keyword.Declaration,
+            ),
+
+            # Type keywords
+            (
+                words(
+                    (
+                        "FIXED",
+                        "FLOAT",
+                        "STRING",
+                        "LEN",
+                        "DP",
+                        "ARRAY",
+                        "INITIAL",
+                        "UNDEFINED",
+                        "OBJECT",
+                    ),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Keyword.Type,
+            ),
+
+            # Visibility/scope keywords
+            (
+                words(
+                    ("PUBLIC", "PRIVATE", "SHARED", "STATIC"),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Keyword.Declaration,
+            ),
+
+            # Control flow keywords
+            (
+                words(
+                    (
+                        "IF",
+                        "THEN",
+                        "ELSE",
+                        "ELSEIF",
+                        "FOR",
+                        "TO",
+                        "FROM",
+                        "BY",
+                        "REPEAT",
+                        "WHILE",
+                        "UNTIL",
+                        "BEGIN",
+                        "END",
+                        "CALL",
+                        "RETURN",
+                        "TRY",
+                        "CATCH",
+                        "THROW",
+                        "JUMP",
+                    ),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Keyword,
+            ),
+
+            # Database operation keywords (including abbreviations)
+            (
+                words(
+                    (
+                        "FIND",
+                        "STORE",
+                        "UPDATE",
+                        "DELETE",
+                        "FD",
+                        "FDR",
+                        "FDV",
+                        "FR",
+                        "FRN",
+                        "FRV",
+                        "FEO",
+                        "FPC",
+                        "AAI",
+                        "CH",
+                        "CT",
+                        "ST",
+                        "PAI",
+                        "NP",
+                        "ADD",
+                    ),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Keyword,
+            ),
+
+            # Other common keywords
+            (
+                words(
+                    (
+                        "IN",
+                        "PRINT",
+                        "AUDIT",
+                        "SKIP",
+                        "LINES",
+                        "NEW",
+                        "IS",
+                        "RECORDS",
+                        "VALUE",
+                        "OCCURRENCE",
+                        "ALL",
+                        "WHERE",
+                        "AT",
+                        "ON",
+                        "COUNT",
+                        "SORT",
+                        "COUNTED",
+                        "ORDERED",
+                    ),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Keyword,
+            ),
+
+            # Word operators
+            (
+                words(
+                    (
+                        "AND",
+                        "OR",
+                        "NOT",
+                        "NOR",
+                        "ANDIF",
+                        "ORIF",
+                        "EQ",
+                        "NE",
+                        "GT",
+                        "LT",
+                        "GE",
+                        "LE",
+                        "WITH",
+                        "LIKE",
+                        "PRESENT",
+                    ),
+                    prefix=r"\b",
+                    suffix=r"\b",
+                ),
+                Operator.Word,
+            ),
+
+            # Symbolic operators
+            (r"<>", Operator),
+            (r">=", Operator),
+            (r"<=", Operator),
+            (r"[+\-*/=<>]", Operator),
+
+            # Punctuation
+            (r"[(),:\[\]]", Punctuation),
+
+            # Identifiers (catch-all)
+            (r"[a-z_]\w*", Name),
+        ],
+        "block-comment": [
+            (r"\?/", Comment.Multiline, "#pop"),
+            (r"[^?]+", Comment.Multiline),
+            (r"\?", Comment.Multiline),
+        ],
+        "string": [
+            (r"''", String.Single),  # Escaped quote
+            (r"'", String.Single, "#pop"),  # End of string
+            (r"[^']+", String.Single),  # String content
+        ],
+        "text-block": [
+            (r"END\s+TEXT\b", Keyword, "#pop"),
+            (r"\{", Punctuation, "interpolation"),
+            (r"[^\{]+?(?=END\s+TEXT|\{|$)", String),
+            (r"[^\{]+", String),
+            (r"\{", String),
+        ],
+        "html-block": [
+            (r"END\s+HTML\b", Keyword, "#pop"),
+            (r"\{", Punctuation, "interpolation"),
+            (r"[^\{]+?(?=END\s+HTML|\{|$)", String),
+            (r"[^\{]+", String),
+            (r"\{", String),
+        ],
+        "interpolation": [
+            (r"\}", Punctuation, "#pop"),
+
+            # Include most root patterns for expressions inside braces
+            (r"\s+", Whitespace),
+            (r"'", String.Single, "string"),
+
+            # Numbers
+            (r"[0-9]+\.[0-9]+([eE][+-]?[0-9]+)?", Number.Float),
+            (r"[0-9]+[eE][+-]?[0-9]+", Number.Float),
+            (r"[0-9]+", Number.Integer),
+
+            # $Functions
+            (r"\$[a-z_]\w*", Name.Builtin),
+
+            # Variables
+            (
+                r"(%[a-z_]\w*)(:)([a-z_]\w*)(\()",
+                bygroups(Name.Variable, Punctuation, Name.Function, Punctuation),
+            ),
+            (
+                r"(%[a-z_]\w*)(:)([a-z_]\w*)",
+                bygroups(Name.Variable, Punctuation, Name.Attribute),
+            ),
+            (r"%%[a-z_]\w*", Name.Variable.Global),
+            (r"%[a-z_]\w*", Name.Variable),
+
+            # Operators
+            (r"<>", Operator),
+            (r">=", Operator),
+            (r"<=", Operator),
+            (r"[+\-*/=<>]", Operator),
+
+            # Punctuation
+            (r"[(),:\[\]]", Punctuation),
+
+            # Identifiers
+            (r"[a-z_]\w*", Name),
+        ],
+    }

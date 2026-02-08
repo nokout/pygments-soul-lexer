@@ -1,0 +1,61 @@
+* Basic SOUL Syntax Examples
+* This file demonstrates fundamental SOUL language features
+
+* Variable declarations
+%NAME IS STRING LEN 50
+%AGE IS FIXED
+%SALARY IS FLOAT
+
+* Simple assignment
+%NAME = 'John Doe'
+%AGE = 35
+%SALARY = 75000.50
+
+* String operations with $Functions
+%FIRST_NAME = $Substr(%NAME, 1, 4)
+%NAME_LEN = $Len(%NAME)
+%UPPER_NAME = $Upcase(%NAME)
+
+* Arithmetic operations
+%TAX_RATE = 0.28
+%TAX_AMT = %SALARY * %TAX_RATE
+%NET_PAY = %SALARY - %TAX_AMT
+
+* Conditional statements
+IF %AGE GT 18 THEN
+    PRINT 'Adult: ' WITH %NAME
+ELSE
+    PRINT 'Minor: ' WITH %NAME
+END IF
+
+* Multi-condition logic
+IF %SALARY GE 50000 AND %AGE LT 65 THEN
+    PRINT 'Standard employee'
+ELSEIF %SALARY GE 100000 THEN
+    PRINT 'Senior employee'
+ELSE
+    PRINT 'Entry level'
+END IF
+
+* Loop with label
+COUNTER_LOOP: FOR %I FROM 1 TO 10
+    PRINT 'Count: ' WITH %I
+END FOR
+
+* REPEAT WHILE loop
+%COUNTER = 0
+REPEAT WHILE %COUNTER LT 5
+    %COUNTER = %COUNTER + 1
+    PRINT %COUNTER
+END REPEAT
+
+* String with escaped quote
+%MESSAGE = 'It''s a beautiful day'
+PRINT %MESSAGE
+
+* Dummy strings for user input
+%USER_NAME = ??ENTER_YOUR_NAME
+%USER_AGE = ?$ENTER_YOUR_AGE
+
+* Comments can appear anywhere
+PRINT 'End of examples'

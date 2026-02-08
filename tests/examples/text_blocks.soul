@@ -1,0 +1,116 @@
+* TEXT and HTML Block Examples
+* Demonstrates text interpolation features
+
+%TITLE = 'SOUL Language Report'
+%AUTHOR = 'John Smith'
+%DATE = $Curdate
+%VERSION = '2.1'
+
+* Simple TEXT block
+TEXT
+Welcome to the SOUL programming tutorial!
+This is plain text output.
+END TEXT
+
+* TEXT block with variable interpolation
+TEXT
+Report Title: {%TITLE}
+Author: {%AUTHOR}
+Generated: {%DATE}
+Version: {%VERSION}
+END TEXT
+
+* TEXT block with expressions
+%COUNT = 10
+%PRICE = 29.99
+TEXT
+Item Count: {%COUNT}
+Unit Price: ${%PRICE}
+Total: ${%COUNT * %PRICE}
+Tax (8%): ${(%COUNT * %PRICE) * 0.08}
+END TEXT
+
+* TEXT block with function calls
+%CUSTOMER_NAME = 'alice johnson'
+TEXT
+Customer: {$Proper(%CUSTOMER_NAME)}
+Name Length: {$Len(%CUSTOMER_NAME)} characters
+Uppercase: {$Upcase(%CUSTOMER_NAME)}
+END TEXT
+
+* HTML block for web output
+HTML
+<html>
+<head>
+    <title>{%TITLE}</title>
+</head>
+<body>
+    <h1>{%TITLE}</h1>
+    <p>Version: {%VERSION}</p>
+</body>
+</html>
+END HTML
+
+* Complex HTML with multiple interpolations
+%ROWS = 5
+HTML
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Value</th>
+    </tr>
+END HTML
+
+FOR %I FROM 1 TO %ROWS
+    %ROW_NAME = 'Item ' WITH %I
+    %ROW_VALUE = %I * 100
+    HTML
+    <tr>
+        <td>{%ROW_NAME}</td>
+        <td>{%ROW_VALUE}</td>
+    </tr>
+    END HTML
+END FOR
+
+HTML
+</table>
+END HTML
+
+* TEXT block with object method calls
+IMAGE REPORT_DATA
+    HEADER IS STRING LEN 100
+    FOOTER IS STRING LEN 100
+    LINE_COUNT IS FIXED
+END IMAGE
+
+%REPORT = NEW REPORT_DATA
+%REPORT:HEADER = 'Monthly Sales Report'
+%REPORT:FOOTER = 'End of Report'
+%REPORT:LINE_COUNT = 42
+
+TEXT
+{%REPORT:HEADER}
+----------------------------------------
+Total Lines: {%REPORT:LINE_COUNT}
+----------------------------------------
+{%REPORT:FOOTER}
+END TEXT
+
+* Nested expressions in TEXT blocks
+%BASE = 10
+%EXPONENT = 3
+TEXT
+Calculation: {%BASE} to the power of {%EXPONENT}
+Result: {%BASE * %BASE * %BASE}
+Using function: {$Power(%BASE, %EXPONENT)}
+END TEXT
+
+* Multi-line TEXT with formatting
+TEXT
+╔════════════════════════════════════╗
+║  {$Center(%TITLE, 34)}  ║
+╠════════════════════════════════════╣
+║  Author: {$Pad(%AUTHOR, 24)}  ║
+║  Date:   {$Pad(%DATE, 24)}  ║
+╚════════════════════════════════════╝
+END TEXT

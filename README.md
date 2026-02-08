@@ -176,7 +176,7 @@ pytest tests/ --cov=soul_lexer --cov-report=html
 pygments-soul-lexer/
 ├── pyproject.toml           # Package configuration
 ├── README.md                # This file
-├── LICENSE                  # BSD-3-Clause license
+├── LICENSE                  # MIT license
 ├── soul_lexer/
 │   ├── __init__.py         # Package initialization
 │   └── lexer.py            # Main SOULLexer implementation

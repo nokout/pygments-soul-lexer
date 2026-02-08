@@ -1,10 +1,6 @@
 # Include documentation and metadata
 include README.md
 include LICENSE
-include PLAN.md
-include QUICKSTART.md
-include IMPLEMENTATION_SUMMARY.md
-include INDENTED_COMMENT_FIX.md
 
 # Include example files
 recursive-include tests/examples *.soul

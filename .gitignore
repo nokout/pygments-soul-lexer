@@ -9,4 +9,3 @@ build/
 .coverage
 htmlcov/
 .pypirc
-MANIFEST.info

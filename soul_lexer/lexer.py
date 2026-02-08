@@ -329,16 +329,14 @@ class SOULLexer(RegexLexer):
         "text-block": [
             (r"END\s+TEXT\b", Keyword, "#pop"),
             (r"\{", Punctuation, "interpolation"),
-            (r"[^\{]+?(?=END\s+TEXT|\{|$)", String),
-            (r"[^\{]+", String),
-            (r"\{", String),
+            (r"[^\{]+?(?=END\s+TEXT|\{)", String),
+            (r"[^\{]+", String),  # Fallback for end of input
         ],
         "html-block": [
             (r"END\s+HTML\b", Keyword, "#pop"),
             (r"\{", Punctuation, "interpolation"),
-            (r"[^\{]+?(?=END\s+HTML|\{|$)", String),
-            (r"[^\{]+", String),
-            (r"\{", String),
+            (r"[^\{]+?(?=END\s+HTML|\{)", String),
+            (r"[^\{]+", String),  # Fallback for end of input
         ],
         "interpolation": [
             (r"\}", Punctuation, "#pop"),

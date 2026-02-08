@@ -327,7 +327,7 @@ class SOULLexer(RegexLexer):
             (r"[+\-*/=<>]", Operator),
 
             # Punctuation
-            (r"[(),:\[\]]", Punctuation),
+            (r"[(),:.\[\]]", Punctuation),
 
             # Identifiers (catch-all)
             (r"[a-z_]\w*", Name),
@@ -388,7 +388,7 @@ class SOULLexer(RegexLexer):
             (r"[+\-*/=<>]", Operator),
 
             # Punctuation
-            (r"[(),:\[\]]", Punctuation),
+            (r"[(),:.\[\]]", Punctuation),
 
             # Identifiers
             (r"[a-z_]\w*", Name),

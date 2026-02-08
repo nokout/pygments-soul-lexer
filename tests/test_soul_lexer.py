@@ -3,6 +3,8 @@ Comprehensive test suite for the SOUL Pygments lexer.
 """
 
 import pytest
+from pathlib import Path
+from glob import glob
 
 from pygments.token import (
     Comment,
@@ -354,3 +356,18 @@ class TestSOULLexer:
         # END should be label, not keyword
         assert (Name.Label, "END") in tokens
         assert (Punctuation, ":") in tokens
+
+
+# Integration tests for example files
+@pytest.mark.parametrize("example_file", glob("tests/examples/*.soul"))
+def test_example_files_produce_no_errors(example_file):
+    """Test that example .soul files tokenize without Error tokens."""
+    with open(example_file) as f:
+        code = f.read()
+    
+    lexer = SOULLexer()
+    tokens = list(lexer.get_tokens(code))
+    error_tokens = [t for t in tokens if t[0] == Error]
+    
+    assert len(error_tokens) == 0, \
+        f"Error tokens found in {example_file}: {error_tokens}"

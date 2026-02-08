@@ -120,40 +120,40 @@ class SOULLexer(RegexLexer):
             (r"%[a-z_]\w*", Name.Variable),
 
             # Multi-word keywords - longest first to avoid partial matches
-            (r"\b(FOR\s+EACH\s+RECORD)\b", Keyword),
-            (r"\b(FOR\s+EACH\s+VALUE)\b", Keyword),
-            (r"\b(FOR\s+EACH\s+OCCURRENCE)\b", Keyword),
-            (r"\b(FIND\s+ALL\s+RECORDS)\b", Keyword),
-            (r"\b(FIND\s+ALL\s+VALUES)\b", Keyword),
-            (r"\b(STORE\s+RECORD)\b", Keyword),
-            (r"\b(UPDATE\s+RECORD)\b", Keyword),
-            (r"\b(DELETE\s+RECORD)\b", Keyword),
+            (r"\b(FOR[ \t]+EACH[ \t]+RECORD)\b", Keyword),
+            (r"\b(FOR[ \t]+EACH[ \t]+VALUE)\b", Keyword),
+            (r"\b(FOR[ \t]+EACH[ \t]+OCCURRENCE)\b", Keyword),
+            (r"\b(FIND[ \t]+ALL[ \t]+RECORDS)\b", Keyword),
+            (r"\b(FIND[ \t]+ALL[ \t]+VALUES)\b", Keyword),
+            (r"\b(STORE[ \t]+RECORD)\b", Keyword),
+            (r"\b(UPDATE[ \t]+RECORD)\b", Keyword),
+            (r"\b(DELETE[ \t]+RECORD)\b", Keyword),
 
             # END statements
-            (r"\b(END\s+IF)\b", Keyword),
-            (r"\b(END\s+FOR)\b", Keyword),
-            (r"\b(END\s+REPEAT)\b", Keyword),
-            (r"\b(END\s+CLASS)\b", Keyword),
-            (r"\b(END\s+IMAGE)\b", Keyword),
-            (r"\b(END\s+PROCEDURE)\b", Keyword),
-            (r"\b(END\s+FUNCTION)\b", Keyword),
-            (r"\b(END\s+SUBROUTINE)\b", Keyword),
-            (r"\b(END\s+TEXT)\b", Keyword),
-            (r"\b(END\s+HTML)\b", Keyword),
-            (r"\b(END\s+TRY)\b", Keyword),
-            (r"\b(END\s+CATCH)\b", Keyword),
-            (r"\b(END\s+BLOCK)\b", Keyword),
+            (r"\b(END[ \t]+IF)\b", Keyword),
+            (r"\b(END[ \t]+FOR)\b", Keyword),
+            (r"\b(END[ \t]+REPEAT)\b", Keyword),
+            (r"\b(END[ \t]+CLASS)\b", Keyword),
+            (r"\b(END[ \t]+IMAGE)\b", Keyword),
+            (r"\b(END[ \t]+PROCEDURE)\b", Keyword),
+            (r"\b(END[ \t]+FUNCTION)\b", Keyword),
+            (r"\b(END[ \t]+SUBROUTINE)\b", Keyword),
+            (r"\b(END[ \t]+TEXT)\b", Keyword),
+            (r"\b(END[ \t]+HTML)\b", Keyword),
+            (r"\b(END[ \t]+TRY)\b", Keyword),
+            (r"\b(END[ \t]+CATCH)\b", Keyword),
+            (r"\b(END[ \t]+BLOCK)\b", Keyword),
 
             # Other multi-word constructs
-            (r"\b(VARIABLES\s+ARE)\b", Keyword.Declaration),
-            (r"\b(REPEAT\s+WHILE)\b", Keyword),
-            (r"\b(REPEAT\s+UNTIL)\b", Keyword),
+            (r"\b(VARIABLES[ \t]+ARE)\b", Keyword.Declaration),
+            (r"\b(REPEAT[ \t]+WHILE)\b", Keyword),
+            (r"\b(REPEAT[ \t]+UNTIL)\b", Keyword),
 
             # Word operators with multi-word forms
-            (r"\b(IS\s+NOT\s+LIKE)\b", Operator.Word),
-            (r"\b(IS\s+LIKE)\b", Operator.Word),
-            (r"\b(IS\s+NOT\s+PRESENT)\b", Operator.Word),
-            (r"\b(IS\s+PRESENT)\b", Operator.Word),
+            (r"\b(IS[ \t]+NOT[ \t]+LIKE)\b", Operator.Word),
+            (r"\b(IS[ \t]+LIKE)\b", Operator.Word),
+            (r"\b(IS[ \t]+NOT[ \t]+PRESENT)\b", Operator.Word),
+            (r"\b(IS[ \t]+PRESENT)\b", Operator.Word),
 
             # Declaration keywords
             (
@@ -343,15 +343,15 @@ class SOULLexer(RegexLexer):
             (r"[^']+", String.Single),  # String content
         ],
         "text-block": [
-            (r"END\s+TEXT\b", Keyword, "#pop"),
+            (r"END[ \t]+TEXT\b", Keyword, "#pop"),
             (r"\{", Punctuation, "interpolation"),
-            (r"[^\{]+?(?=END\s+TEXT|\{)", String),
+            (r"[^\{]+?(?=END[ \t]+TEXT|\{)", String),
             (r"[^\{]+", String),  # Fallback for end of input
         ],
         "html-block": [
-            (r"END\s+HTML\b", Keyword, "#pop"),
+            (r"END[ \t]+HTML\b", Keyword, "#pop"),
             (r"\{", Punctuation, "interpolation"),
-            (r"[^\{]+?(?=END\s+HTML|\{)", String),
+            (r"[^\{]+?(?=END[ \t]+HTML|\{)", String),
             (r"[^\{]+", String),  # Fallback for end of input
         ],
         "interpolation": [

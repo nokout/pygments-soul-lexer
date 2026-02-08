@@ -277,3 +277,80 @@ class TestSOULLexer:
 
         error_tokens = [t for t in tokens if t[0] == Error]
         assert len(error_tokens) == 0
+
+    def test_unclosed_string(self, lexer):
+        """Test unclosed string gracefully handles EOF."""
+        tokens = list(self.get_tokens(lexer, "'hello"))
+        # Should not raise an error, just tokenize what it can
+        assert any(t[0] in (String.Single, String) for t in tokens)
+
+    def test_unclosed_text_block(self, lexer):
+        """Test unclosed TEXT block doesn't error."""
+        code = "TEXT\nHello World"
+        tokens = list(self.get_tokens(lexer, code))
+        # Should have TEXT keyword and string content
+        assert (Keyword, "TEXT") in tokens
+        assert any(t[0] == String for t in tokens)
+
+    def test_empty_text_block(self, lexer):
+        """Test empty TEXT block (edge case for lookahead patterns)."""
+        code = "TEXT\nEND TEXT"
+        tokens = self.get_tokens(lexer, code)
+        keyword_tokens = [t for t in tokens if t[0] == Keyword]
+        assert len(keyword_tokens) == 2  # TEXT and END TEXT
+
+    def test_keyword_prefix_not_matched(self, lexer):
+        """Test that FIND1 is not matched as FIND keyword."""
+        tokens = self.get_tokens(lexer, "FIND1")
+        # Should be Name, not Keyword (word boundary check)
+        assert tokens[0][0] == Name
+
+    def test_end_text_outside_block(self, lexer):
+        """Test END TEXT outside a TEXT block is handled."""
+        tokens = self.get_tokens(lexer, "END TEXT")
+        # Should be recognized as a keyword even in root state
+        keyword_tokens = [t for t in tokens if t[0] == Keyword]
+        assert len(keyword_tokens) == 1
+
+    def test_nested_interpolation(self, lexer):
+        """Test nested braces in TEXT block interpolation."""
+        code = "TEXT\n{%VAR}\nEND TEXT"
+        tokens = list(self.get_tokens(lexer, code))
+        # Should have interpolation punctuation
+        assert (Punctuation, "{") in tokens
+        assert (Punctuation, "}") in tokens
+        assert any(t[0] == Name.Variable for t in tokens)
+
+    def test_windows_line_endings(self, lexer):
+        """Test Windows \\r\\n line endings work correctly."""
+        code = "* Comment\r\n%VAR = 1\r\n"
+        tokens = list(self.get_tokens(lexer, code))
+        assert any(t[0] == Comment.Single for t in tokens)
+        assert any(t[0] == Name.Variable for t in tokens)
+
+    def test_empty_comment(self, lexer):
+        """Test comment with only asterisk and space."""
+        tokens = self.get_tokens(lexer, "* ")
+        assert tokens[0][0] == Comment.Single
+
+    def test_comment_after_blank_lines(self, lexer):
+        """Test comment recognition after multiple blank lines."""
+        code = "\n\n    * This is a comment"
+        tokens = self.get_tokens(lexer, code)
+        comment_tokens = [t for t in tokens if t[0] == Comment.Single]
+        assert len(comment_tokens) == 1
+
+    def test_multi_word_keyword_extra_spaces(self, lexer):
+        """Test multi-word keyword with extra spaces."""
+        tokens = self.get_tokens(lexer, "FOR  EACH  RECORD")
+        # Should still match as keyword (uses [ \\t]+ pattern)
+        keyword_tokens = [t for t in tokens if t[0] == Keyword]
+        assert len(keyword_tokens) == 1
+
+    def test_label_keyword_name(self, lexer):
+        """Test label that matches keyword name."""
+        code = "END: FOR %I FROM 1 TO 10"
+        tokens = self.get_tokens(lexer, code)
+        # END should be label, not keyword
+        assert (Name.Label, "END") in tokens
+        assert (Punctuation, ":") in tokens

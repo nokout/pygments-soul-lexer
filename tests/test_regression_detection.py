@@ -1,5 +1,5 @@
 """
-Tests to demonstrate that exact sequence assertions catch regressions 
+Tests to demonstrate that exact sequence assertions catch regressions
 that weak assertions would miss.
 
 These tests simulate potential bugs that could occur in the lexer and
@@ -33,18 +33,18 @@ class TestRegressionDetection:
     def test_token_order_matters(self, lexer):
         """
         Demonstrate that exact assertions catch token reordering.
-        
+
         A weak assertion like:
             assert (Name.Variable, "%VAR") in tokens
             assert (Operator, "=") in tokens
             assert (Number.Integer, "1") in tokens
-        
+
         would pass even if tokens were incorrectly ordered as: "1 = %VAR"
-        
+
         Our exact assertion catches this.
         """
         tokens = self.get_tokens(lexer, "%VAR = 1")
-        
+
         # This would catch incorrect ordering
         assert tokens == [
             (Name.Variable, "%VAR"),
@@ -54,7 +54,7 @@ class TestRegressionDetection:
             (Number.Integer, "1"),
             (Whitespace, "\n"),
         ]
-        
+
         # Verify that reversed order would fail
         reversed_tokens = [
             (Number.Integer, "1"),
@@ -69,18 +69,18 @@ class TestRegressionDetection:
     def test_token_duplication_detection(self, lexer):
         """
         Demonstrate that exact assertions catch token duplication.
-        
+
         A weak assertion checking only presence would miss if a token
         appeared multiple times when it shouldn't.
         """
         tokens = self.get_tokens(lexer, "IF")
-        
+
         # Exact count matters - should be exactly one keyword
         assert tokens == [
             (Keyword, "IF"),
             (Whitespace, "\n"),
         ]
-        
+
         # Verify that duplication would fail
         duplicated_tokens = [
             (Keyword, "IF"),
@@ -92,20 +92,20 @@ class TestRegressionDetection:
     def test_missing_token_detection(self, lexer):
         """
         Demonstrate that exact assertions catch missing tokens.
-        
+
         A weak assertion like:
             assert any(t[0] == Keyword for t in tokens)
-        
+
         would pass even if whitespace or other tokens were missing.
         """
         tokens = self.get_tokens(lexer, "FOR EACH RECORD")
-        
+
         # All tokens must be present
         assert tokens == [
             (Keyword, "FOR EACH RECORD"),
             (Whitespace, "\n"),
         ]
-        
+
         # Verify that missing whitespace would fail
         missing_whitespace = [
             (Keyword, "FOR EACH RECORD"),
@@ -116,18 +116,18 @@ class TestRegressionDetection:
     def test_token_completeness(self, lexer):
         """
         Demonstrate that exact assertions ensure complete token coverage.
-        
+
         Weak assertions might only check specific tokens and miss that
         extra unexpected tokens were generated.
         """
         tokens = self.get_tokens(lexer, "%VAR")
-        
+
         # Exact match ensures no extra tokens
         assert tokens == [
             (Name.Variable, "%VAR"),
             (Whitespace, "\n"),
         ]
-        
+
         # Verify extra tokens would fail
         extra_tokens = [
             (Name.Variable, "%VAR"),
@@ -142,13 +142,13 @@ class TestRegressionDetection:
         tokenized as single units, not split into multiple tokens.
         """
         tokens = self.get_tokens(lexer, "END IF")
-        
+
         # Must be a single multi-word keyword, not separate tokens
         assert tokens == [
             (Keyword, "END IF"),
             (Whitespace, "\n"),
         ]
-        
+
         # Verify that split tokens would fail
         split_tokens = [
             (Keyword, "END"),      # Bug: split instead of single token
@@ -161,12 +161,12 @@ class TestRegressionDetection:
     def test_whitespace_handling_precision(self, lexer):
         """
         Demonstrate that exact assertions catch incorrect whitespace handling.
-        
+
         Weak assertions might ignore whitespace entirely, missing bugs
         in how whitespace is tokenized.
         """
         tokens = self.get_tokens(lexer, "IF THEN")
-        
+
         # Whitespace handling must be exact
         assert tokens == [
             (Keyword, "IF"),
@@ -174,7 +174,7 @@ class TestRegressionDetection:
             (Keyword, "THEN"),
             (Whitespace, "\n"),
         ]
-        
+
         # Verify that missing or wrong whitespace would fail
         wrong_whitespace = [
             (Keyword, "IF"),
@@ -205,12 +205,12 @@ class TestWeakAssertionComparison:
         Show that a weak 'in' assertion would incorrectly pass with wrong order.
         """
         tokens = self.get_tokens(lexer, "%A + %B")
-        
+
         # Weak assertion (would miss ordering bugs):
         # assert (Name.Variable, "%A") in tokens  # ✓ passes
         # assert (Operator, "+") in tokens         # ✓ passes
         # assert (Name.Variable, "%B") in tokens  # ✓ passes
-        
+
         # Strong assertion (catches ordering):
         expected = [
             (Name.Variable, "%A"),
@@ -221,7 +221,7 @@ class TestWeakAssertionComparison:
             (Whitespace, "\n"),
         ]
         assert tokens == expected
-        
+
         # Verify weak assertion would pass with wrong order
         assert (Name.Variable, "%A") in tokens
         assert (Operator, "+") in tokens
@@ -235,16 +235,16 @@ class TestWeakAssertionComparison:
         Show that 'any' assertions would pass even with duplicate tokens.
         """
         tokens = self.get_tokens(lexer, "FIND")
-        
+
         # Weak assertion (would miss duplication):
         # assert any(t[0] == Keyword for t in tokens)  # ✓ passes even with duplicates
-        
+
         # Strong assertion (catches exact count):
         assert tokens == [
             (Keyword, "FIND"),
             (Whitespace, "\n"),
         ]
-        
+
         # Count the keywords - should be exactly 1
         keyword_count = sum(1 for t in tokens if t[0] == Keyword)
         assert keyword_count == 1

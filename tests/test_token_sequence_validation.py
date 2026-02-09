@@ -156,7 +156,7 @@ class TestExactTokenSequenceMatching:
 
         # Verify that split tokens would be detected
         split_tokens = [
-            (Keyword, "END"),      # Incorrectly split
+            (Keyword, "END"),  # Incorrectly split
             (Whitespace, " "),
             (Keyword, "IF"),
             (Whitespace, "\n"),

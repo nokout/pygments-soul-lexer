@@ -14,6 +14,11 @@ cp README.md docs/index.md
 # - "examples/basic_syntax.html" stays the same (already relative to docs/)
 
 # Use portable sed (works on both Linux and macOS)
-sed 's|\.\./\.\./|./|g' docs/index.md > docs/index.md.tmp && mv docs/index.md.tmp docs/index.md
+sed 's|\.\./\.\./|./|g' docs/index.md > docs/index.md.tmp
+if ! mv docs/index.md.tmp docs/index.md; then
+    echo "Error: Failed to update docs/index.md" >&2
+    rm -f docs/index.md.tmp
+    exit 1
+fi
 
 echo "✓ README copied and links fixed"

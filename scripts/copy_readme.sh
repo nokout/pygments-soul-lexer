@@ -13,6 +13,7 @@ cp README.md docs/index.md
 # - "../../" (going up to root) should become "./" (current directory is root)
 # - "examples/basic_syntax.html" stays the same (already relative to docs/)
 
-sed -i 's|\.\./\.\./|./|g' docs/index.md
+# Use portable sed (works on both Linux and macOS)
+sed 's|\.\./\.\./|./|g' docs/index.md > docs/index.md.tmp && mv docs/index.md.tmp docs/index.md
 
 echo "✓ README copied and links fixed"

@@ -40,11 +40,11 @@ jobs:
       
       - name: Generate HTML examples from SOUL files
         run: |
-          python scripts/generate_examples.py
+          bash scripts/generate_examples.sh
       
-      - name: Copy README to docs
+      - name: Copy README to docs and fix links
         run: |
-          cp README.md docs/index.md
+          bash scripts/copy_readme.sh
       
       - name: Setup Pages
         uses: actions/configure-pages@v5

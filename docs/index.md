@@ -2,7 +2,7 @@
 
 A [Pygments](https://pygments.org/) lexer for **SOUL** (System Online User Language), the 4GL language for Rocket Software's Model 204 database system.
 
-**🌟 [View Live Examples](../../)** - See syntax highlighting in action!
+**🌟 [View Live Examples](./)** - See syntax highlighting in action!
 
 ## Installation
 
@@ -82,7 +82,7 @@ python verify_lexer.py              # Visual verification
 
 ## Examples
 
-**🎨 [View Live Syntax-Highlighted Examples](../../)**
+**🎨 [View Live Syntax-Highlighted Examples](./)**
 
 Interactive HTML examples with syntax highlighting:
 - [Basic Syntax](examples/basic_syntax.html) - Variables, control flow

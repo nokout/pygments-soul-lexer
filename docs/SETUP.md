@@ -15,8 +15,8 @@ This repository is configured for automated GitHub Pages deployment with auto-ge
 
 Once GitHub Pages is enabled and you push to the `main` branch, the workflow automatically:
 
-1. **Generates HTML examples** from SOUL source files in `tests/examples/`
-2. **Copies README.md** to `docs/index.md` for the landing page
+1. **Generates HTML examples** from SOUL source files in `tests/examples/` using `pygmentize`
+2. **Copies README.md** to `docs/index.md` and fixes relative links for GitHub Pages
 3. **Deploys to GitHub Pages** at https://nokout.github.io/pygments-soul-lexer/
 
 This ensures the documentation always stays up-to-date with the latest code examples.
@@ -25,8 +25,8 @@ This ensures the documentation always stays up-to-date with the latest code exam
 
 The GitHub Pages site includes:
 
-- **Landing page** (`docs/index.md`): Auto-copied from README.md (GitHub Pages renders markdown)
-- **Live examples** (`docs/examples/*.html`): Auto-generated from `tests/examples/*.soul` files
+- **Landing page** (`docs/index.md`): Auto-copied from README.md with fixed relative links (GitHub Pages renders markdown)
+- **Live examples** (`docs/examples/*.html`): Auto-generated from `tests/examples/*.soul` files using `pygmentize`
   - Basic Syntax
   - Database Operations
   - OOP Features
@@ -34,14 +34,17 @@ The GitHub Pages site includes:
 
 ## Testing Locally
 
-To preview the site locally with markdown rendering:
+To preview the site locally:
 
 ```bash
-# Generate HTML examples
-python scripts/generate_examples.py
+# Install the lexer
+pip install -e .
 
-# Copy README
-cp README.md docs/index.md
+# Generate HTML examples
+bash scripts/generate_examples.sh
+
+# Copy README and fix links
+bash scripts/copy_readme.sh
 
 # Serve with Python (markdown won't render, but HTML examples will work)
 cd docs
@@ -70,10 +73,16 @@ The GitHub Actions workflow regenerates everything automatically.
 To manually regenerate the HTML examples locally:
 
 ```bash
-python scripts/generate_examples.py
+bash scripts/generate_examples.sh
 ```
 
-This is useful for testing before pushing changes.
+To manually copy and fix README links:
+
+```bash
+bash scripts/copy_readme.sh
+```
+
+These are useful for testing before pushing changes.
 
 ## Troubleshooting
 
@@ -82,4 +91,4 @@ If the deployment fails:
 1. Check the Actions tab for error messages
 2. Ensure GitHub Pages is enabled with "GitHub Actions" as the source
 3. Verify the workflow has the necessary permissions (already configured)
-4. Ensure `scripts/generate_examples.py` is executable
+4. Ensure the lexer is installed (`pip install -e .`) before running generation scripts

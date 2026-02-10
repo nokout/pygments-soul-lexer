@@ -1,6 +1,6 @@
 # GitHub Pages Setup Instructions
 
-This repository is now configured for GitHub Pages deployment. To complete the setup, you need to enable GitHub Pages in the repository settings.
+This repository is configured for automated GitHub Pages deployment with auto-generated documentation.
 
 ## Steps to Enable GitHub Pages
 
@@ -11,20 +11,22 @@ This repository is now configured for GitHub Pages deployment. To complete the s
    - **Source**: Select "GitHub Actions" (not "Deploy from a branch")
 5. Save the settings
 
-## What Happens Next
+## What Happens Automatically
 
-Once GitHub Pages is enabled and you merge this PR to the `main` branch:
+Once GitHub Pages is enabled and you push to the `main` branch, the workflow automatically:
 
-1. The GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) will automatically run
-2. It will deploy the contents of the `docs/` directory to GitHub Pages
-3. Your site will be available at: https://nokout.github.io/pygments-soul-lexer/
+1. **Generates HTML examples** from SOUL source files in `tests/examples/`
+2. **Copies README.md** to `docs/index.md` for the landing page
+3. **Deploys to GitHub Pages** at https://nokout.github.io/pygments-soul-lexer/
+
+This ensures the documentation always stays up-to-date with the latest code examples.
 
 ## What's Included
 
 The GitHub Pages site includes:
 
-- **Landing page** (`docs/index.html`): A formatted version of the README with navigation
-- **Live examples** (`docs/examples/*.html`): Four syntax-highlighted SOUL code examples
+- **Landing page** (`docs/index.md`): Auto-copied from README.md (GitHub Pages renders markdown)
+- **Live examples** (`docs/examples/*.html`): Auto-generated from `tests/examples/*.soul` files
   - Basic Syntax
   - Database Operations
   - OOP Features
@@ -32,22 +34,46 @@ The GitHub Pages site includes:
 
 ## Testing Locally
 
-To preview the site locally:
+To preview the site locally with markdown rendering:
 
 ```bash
+# Generate HTML examples
+python scripts/generate_examples.py
+
+# Copy README
+cp README.md docs/index.md
+
+# Serve with Python (markdown won't render, but HTML examples will work)
 cd docs
 python -m http.server 8000
 ```
 
 Then open http://localhost:8000 in your browser.
 
-## Future Updates
+For full markdown rendering preview, you can use GitHub's `gh` CLI:
+```bash
+gh repo view --web
+```
 
-To update the GitHub Pages site:
+## Updating the Site
 
-1. Modify files in the `docs/` directory
-2. Commit and push to the `main` branch
-3. The workflow will automatically redeploy the site
+The site updates automatically when you:
+
+1. Modify SOUL example files in `tests/examples/`
+2. Update the README.md
+3. Push changes to the `main` branch
+
+The GitHub Actions workflow regenerates everything automatically.
+
+## Manual Generation (Optional)
+
+To manually regenerate the HTML examples locally:
+
+```bash
+python scripts/generate_examples.py
+```
+
+This is useful for testing before pushing changes.
 
 ## Troubleshooting
 
@@ -55,4 +81,5 @@ If the deployment fails:
 
 1. Check the Actions tab for error messages
 2. Ensure GitHub Pages is enabled with "GitHub Actions" as the source
-3. Verify the workflow has the necessary permissions (already configured in the workflow file)
+3. Verify the workflow has the necessary permissions (already configured)
+4. Ensure `scripts/generate_examples.py` is executable

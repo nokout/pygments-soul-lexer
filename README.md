@@ -2,6 +2,8 @@
 
 A [Pygments](https://pygments.org/) lexer for **SOUL** (System Online User Language), the 4GL language for Rocket Software's Model 204 database system.
 
+**🌟 [View Live Examples](https://nokout.github.io/pygments-soul-lexer/)** - See syntax highlighting in action!
+
 ## Installation
 
 ```bash
@@ -80,11 +82,15 @@ python verify_lexer.py              # Visual verification
 
 ## Examples
 
-See `tests/examples/`:
-- `basic_syntax.soul` - Variables, control flow
-- `database_ops.soul` - FIND, STORE, UPDATE, DELETE
-- `oop_features.soul` - Classes, methods, inheritance
-- `text_blocks.soul` - TEXT/HTML interpolation
+**🎨 [View Live Syntax-Highlighted Examples](https://nokout.github.io/pygments-soul-lexer/)**
+
+Interactive HTML examples with syntax highlighting:
+- [Basic Syntax](https://nokout.github.io/pygments-soul-lexer/examples/basic_syntax.html) - Variables, control flow
+- [Database Operations](https://nokout.github.io/pygments-soul-lexer/examples/database_ops.html) - FIND, STORE, UPDATE, DELETE
+- [OOP Features](https://nokout.github.io/pygments-soul-lexer/examples/oop_features.html) - Classes, methods, inheritance
+- [Text Blocks](https://nokout.github.io/pygments-soul-lexer/examples/text_blocks.html) - TEXT/HTML interpolation
+
+Source files available in `tests/examples/`.
 
 ## Project Structure
 

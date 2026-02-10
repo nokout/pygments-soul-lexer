@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pygments SOUL Lexer</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --link-color: #0066cc;
+            --border-color: #e1e4e8;
+            --code-bg: #f6f8fa;
+            --header-bg: #24292e;
+            --header-text: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+        
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .nav {
+            background-color: #f6f8fa;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nav h2 {
+            margin-bottom: 1rem;
+            color: var(--header-bg);
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .example-card {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            background-color: var(--bg-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .example-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .example-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--header-bg);
+        }
+        
+        .example-card p {
+            color: #586069;
+            margin-bottom: 1rem;
+        }
+        
+        .example-card a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--link-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .example-card a:hover {
+            background-color: #0052a3;
+        }
+        
+        .content {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--header-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .content h2:first-child {
+            margin-top: 0;
+        }
+        
+        .content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--header-bg);
+        }
+        
+        .content ul, .content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .content code {
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+        
+        .content pre {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .content a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        
+        .content a:hover {
+            text-decoration: underline;
+        }
+        
+        .badges {
+            margin-bottom: 1rem;
+        }
+        
+        .badges img {
+            margin-right: 0.5rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #586069;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎨 Pygments SOUL Lexer</h1>
+        <p>Syntax highlighting for the SOUL programming language</p>
+    </header>
+    
+    <div class="container">
+        <nav class="nav">
+            <h2>📚 Live Examples</h2>
+            <p>Explore syntax-highlighted SOUL code examples:</p>
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h3>Basic Syntax</h3>
+                    <p>Variables, control flow, and basic operations</p>
+                    <a href="examples/basic_syntax.html">View Example →</a>
+                </div>
+                <div class="example-card">
+                    <h3>Database Operations</h3>
+                    <p>FIND, STORE, UPDATE, and DELETE operations</p>
+                    <a href="examples/database_ops.html">View Example →</a>
+                </div>
+                <div class="example-card">
+                    <h3>OOP Features</h3>
+                    <p>Classes, methods, and inheritance</p>
+                    <a href="examples/oop_features.html">View Example →</a>
+                </div>
+                <div class="example-card">
+                    <h3>Text Blocks</h3>
+                    <p>TEXT/HTML interpolation and formatting</p>
+                    <a href="examples/text_blocks.html">View Example →</a>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="content">
+            <h2>Overview</h2>
+            <p>A <a href="https://pygments.org/">Pygments</a> lexer for <strong>SOUL</strong> (System Online User Language), the 4GL language for Rocket Software's Model 204 database system.</p>
+            
+            <h2>Installation</h2>
+            <pre><code>pip install pygments-soul-lexer</code></pre>
+            
+            <p><strong>Development installation:</strong></p>
+            <pre><code>git clone https://github.com/nokout/pygments-soul-lexer.git
+cd pygments-soul-lexer
+pip install -e ".[dev]"</code></pre>
+            
+            <h2>Quick Start</h2>
+            
+            <h3>Command line:</h3>
+            <pre><code>pygmentize -l soul myfile.soul
+pygmentize -l soul -f html -o output.html myfile.soul</code></pre>
+            
+            <h3>Python:</h3>
+            <pre><code>from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from soul_lexer import SOULLexer
+
+code = """
+* SOUL Example
+%NAME = 'Alice'
+IF $Len(%NAME) GT 0 THEN
+    PRINT 'Hello ' WITH %NAME
+END IF
+"""
+
+html = highlight(code, SOULLexer(), HtmlFormatter())</code></pre>
+            
+            <h3>Sphinx:</h3>
+            <pre><code>.. code-block:: soul
+
+   FOR EACH RECORD IN EMPLOYEES
+       PRINT %%NAME WITH %%SALARY
+   END FOR</code></pre>
+            
+            <h2>Features</h2>
+            
+            <h3>Language Support:</h3>
+            <ul>
+                <li>Comments: <code>* line</code>, <code>/? block ?/</code></li>
+                <li>Variables: <code>%VAR</code>, <code>%%FIELD</code>, <code>%IMG:ITEM</code>, <code>%OBJ:METHOD()</code></li>
+                <li>Functions: <code>$Len</code>, <code>$Substr</code>, <code>$Curdate</code></li>
+                <li>Keywords: IF, FOR, WHILE, FIND, STORE, CLASS, etc.</li>
+                <li>Multi-word: FOR EACH RECORD, END IF, STORE RECORD</li>
+                <li>Strings with escapes: <code>'it''s'</code></li>
+                <li>Numbers: integers, floats, scientific notation</li>
+                <li>Operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, AND, OR, EQ, GT</li>
+                <li>TEXT/HTML blocks with interpolation: <code>{%VAR}</code></li>
+                <li>Macro directives: <code>!DEF</code>, <code>!IFDEF</code></li>
+                <li>Case-insensitive syntax</li>
+            </ul>
+            
+            <p><strong>Supported extensions:</strong> <code>.soul</code>, <code>.m204</code>, <code>.proc</code></p>
+            <p><strong>Lexer aliases:</strong> <code>soul</code>, <code>model204</code></p>
+            
+            <h2>Testing</h2>
+            <pre><code>pytest tests/ -v                    # Run tests
+pytest tests/ --cov=soul_lexer      # With coverage
+python verify_lexer.py              # Visual verification</code></pre>
+            
+            <p><strong>94 tests, 100% coverage</strong></p>
+            
+            <h2>About SOUL</h2>
+            <p>SOUL is a powerful 4GL for the Model 204 database with:</p>
+            <ul>
+                <li>Percent-prefixed variables (<code>%VAR</code>, <code>%%FIELD</code>)</li>
+                <li>Dollar-prefixed built-ins (<code>$Len</code>, <code>$Substr</code>)</li>
+                <li>Database operations (FIND, STORE, UPDATE, DELETE)</li>
+                <li>Object-oriented programming</li>
+                <li>Text interpolation blocks</li>
+                <li>Rich database integration</li>
+            </ul>
+            
+            <p>See <a href="https://m204wiki.rocketsoftware.com/">Model 204 Wiki</a> for more information.</p>
+            
+            <h2>Contributing</h2>
+            <ol>
+                <li>Fork and create feature branch</li>
+                <li>Add tests for changes</li>
+                <li>Run test suite: <code>pytest tests/ -v</code></li>
+                <li>Run linting: <code>ruff check . && ruff format .</code></li>
+                <li>Submit pull request</li>
+            </ol>
+            
+            <h2>License</h2>
+            <p>MIT License - see <a href="https://github.com/nokout/pygments-soul-lexer/blob/main/LICENSE">LICENSE</a> file.</p>
+            
+            <h2>Links</h2>
+            <ul>
+                <li><strong>PyPI:</strong> <a href="https://pypi.org/project/pygments-soul-lexer/">https://pypi.org/project/pygments-soul-lexer/</a></li>
+                <li><strong>GitHub:</strong> <a href="https://github.com/nokout/pygments-soul-lexer">https://github.com/nokout/pygments-soul-lexer</a></li>
+                <li><strong>Pygments:</strong> <a href="https://pygments.org/">https://pygments.org/</a></li>
+                <li><strong>Model 204 Wiki:</strong> <a href="https://m204wiki.rocketsoftware.com/">https://m204wiki.rocketsoftware.com/</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Pygments SOUL Lexer | MIT License</p>
+        <p>Made with ❤️ for the SOUL community</p>
+    </footer>
+</body>
+</html>

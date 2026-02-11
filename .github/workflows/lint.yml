@@ -43,8 +43,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
       
-      - name: Run tests
+      - name: Run tests with coverage
         run: pytest tests/ -v --cov=soul_lexer --cov-report=term-missing
-      
-      - name: Run Jekyll config tests
-        run: pytest tests/test_jekyll_config.py -v

@@ -192,25 +192,75 @@ class TestGitHubPagesDeployment:
         """Test that deploy workflow uploads docs directory."""
         workflow_path = repo_root / ".github" / "workflows" / "deploy-pages.yml"
         with open(workflow_path) as f:
-            content = f.read()
-        assert "docs" in content or "./docs" in content, (
-            "Deploy workflow should upload docs/ directory"
-        )
+            workflow = yaml.safe_load(f)
+
+        # Check that workflow has jobs
+        assert "jobs" in workflow, "Workflow should have jobs defined"
+
+        # Find the upload artifact step
+        found_docs_upload = False
+        for _job_name, job_config in workflow["jobs"].items():
+            if "steps" in job_config:
+                for step in job_config["steps"]:
+                    # Check for upload-pages-artifact action with docs path
+                    if (
+                        "uses" in step
+                        and "upload-pages-artifact" in step["uses"]
+                        and "with" in step
+                        and "path" in step["with"]
+                        and "docs" in step["with"]["path"]
+                    ):
+                        found_docs_upload = True
+                        break
+            if found_docs_upload:
+                break
+
+        assert found_docs_upload, "Deploy workflow should upload docs/ directory"
 
     def test_deploy_workflow_generates_examples(self, repo_root):
         """Test that deploy workflow generates HTML examples."""
         workflow_path = repo_root / ".github" / "workflows" / "deploy-pages.yml"
         with open(workflow_path) as f:
-            content = f.read()
-        assert "generate_examples" in content or "pygmentize" in content, (
-            "Deploy workflow should generate HTML examples"
-        )
+            workflow = yaml.safe_load(f)
+
+        # Check for step that generates examples
+        found_generate_step = False
+        for _job_name, job_config in workflow["jobs"].items():
+            if "steps" in job_config:
+                for step in job_config["steps"]:
+                    # Check step name or run command for example generation
+                    if "name" in step and "example" in step["name"].lower():
+                        found_generate_step = True
+                        break
+                    if "run" in step and (
+                        "generate_examples" in step["run"] or "pygmentize" in step["run"]
+                    ):
+                        found_generate_step = True
+                        break
+            if found_generate_step:
+                break
+
+        assert found_generate_step, "Deploy workflow should generate HTML examples"
 
     def test_deploy_workflow_copies_readme(self, repo_root):
         """Test that deploy workflow copies README to docs."""
         workflow_path = repo_root / ".github" / "workflows" / "deploy-pages.yml"
         with open(workflow_path) as f:
-            content = f.read()
-        assert "copy_readme" in content or "README" in content, (
-            "Deploy workflow should copy README to docs"
-        )
+            workflow = yaml.safe_load(f)
+
+        # Check for step that copies README
+        found_copy_step = False
+        for _job_name, job_config in workflow["jobs"].items():
+            if "steps" in job_config:
+                for step in job_config["steps"]:
+                    # Check step name or run command for README copying
+                    if "name" in step and "readme" in step["name"].lower():
+                        found_copy_step = True
+                        break
+                    if "run" in step and ("copy_readme" in step["run"] or "README" in step["run"]):
+                        found_copy_step = True
+                        break
+            if found_copy_step:
+                break
+
+        assert found_copy_step, "Deploy workflow should copy README to docs"

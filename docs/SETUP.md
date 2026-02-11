@@ -1,3 +1,8 @@
+---
+layout: default
+title: Setup Instructions
+---
+
 # GitHub Pages Setup Instructions
 
 This repository is configured for automated GitHub Pages deployment with auto-generated documentation.

@@ -1,0 +1,5 @@
+# Jekyll configuration for GitHub Pages
+title: Pygments SOUL Lexer
+description: A Pygments lexer for SOUL (System Online User Language), the 4GL language for Rocket Software's Model 204 database system
+theme: jekyll-theme-minimal
+markdown: kramdown

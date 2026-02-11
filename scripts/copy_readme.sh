@@ -3,6 +3,14 @@
 
 set -e
 
+# Cleanup function
+cleanup() {
+    rm -f docs/index.md.tmp docs/index.md.tmp2
+}
+
+# Set up trap to cleanup on exit or error
+trap cleanup EXIT
+
 echo "Copying README.md to docs/index.md and fixing relative links..."
 
 # Create temporary file with Jekyll front matter
@@ -26,11 +34,7 @@ cat README.md >> docs/index.md.tmp
 sed 's|\.\./\.\./|./|g' docs/index.md.tmp > docs/index.md.tmp2
 if ! mv docs/index.md.tmp2 docs/index.md; then
     echo "Error: Failed to update docs/index.md" >&2
-    rm -f docs/index.md.tmp docs/index.md.tmp2
     exit 1
 fi
-
-# Clean up temporary file
-rm -f docs/index.md.tmp
 
 echo "✓ README copied, front matter added, and links fixed"

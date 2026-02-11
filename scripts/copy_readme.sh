@@ -5,8 +5,17 @@ set -e
 
 echo "Copying README.md to docs/index.md and fixing relative links..."
 
-# Copy README to docs
-cp README.md docs/index.md
+# Create temporary file with Jekyll front matter
+cat > docs/index.md.tmp << 'EOF'
+---
+layout: default
+title: Home
+---
+
+EOF
+
+# Append README content
+cat README.md >> docs/index.md.tmp
 
 # Fix relative links for GitHub Pages context
 # When in docs/index.md, we're at the root of the site, so:
@@ -14,11 +23,14 @@ cp README.md docs/index.md
 # - "examples/basic_syntax.html" stays the same (already relative to docs/)
 
 # Use portable sed (works on both Linux and macOS)
-sed 's|\.\./\.\./|./|g' docs/index.md > docs/index.md.tmp
-if ! mv docs/index.md.tmp docs/index.md; then
+sed 's|\.\./\.\./|./|g' docs/index.md.tmp > docs/index.md.tmp2
+if ! mv docs/index.md.tmp2 docs/index.md; then
     echo "Error: Failed to update docs/index.md" >&2
-    rm -f docs/index.md.tmp
+    rm -f docs/index.md.tmp docs/index.md.tmp2
     exit 1
 fi
 
-echo "✓ README copied and links fixed"
+# Clean up temporary file
+rm -f docs/index.md.tmp
+
+echo "✓ README copied, front matter added, and links fixed"

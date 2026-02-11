@@ -1,3 +1,8 @@
+---
+layout: default
+title: Home
+---
+
 # Pygments SOUL Lexer
 
 A [Pygments](https://pygments.org/) lexer for **SOUL** (System Online User Language), the 4GL language for Rocket Software's Model 204 database system.

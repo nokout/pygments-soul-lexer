@@ -18,6 +18,7 @@ cat > docs/index.md.tmp << 'EOF'
 ---
 layout: default
 title: Home
+render_with_liquid: false
 ---
 
 EOF

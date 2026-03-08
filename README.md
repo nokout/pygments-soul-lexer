@@ -92,6 +92,28 @@ Interactive HTML examples with syntax highlighting:
 
 Source files available in `tests/examples/`.
 
+## GitHub Pages
+
+The project site is built with Jekyll and deployed automatically on push to `main`.
+
+**Prerequisites:** Ruby >= 3.0, Bundler (`gem install bundler`), and the package installed in dev mode (`pip install -e ".[dev]"`).
+
+**One-shot build** (mirrors the GitHub Action exactly):
+
+```bash
+bash scripts/build_docs.sh
+```
+
+Output is written to `./_site/`. Use this to verify the build before pushing.
+
+**Local server** (live-reloading, for reviewing and editing):
+
+```bash
+bash scripts/build_docs.sh --serve
+```
+
+Then open http://localhost:4000. The script runs `generate_examples.sh` and `copy_readme.sh` before each build, so the local output matches what the action produces.
+
 ## Project Structure
 
 ```

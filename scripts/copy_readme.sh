@@ -18,13 +18,14 @@ cat > docs/index.md.tmp << 'EOF'
 ---
 layout: default
 title: Home
-render_with_liquid: false
 ---
-
+{% raw %}
 EOF
 
 # Append README content
 cat README.md >> docs/index.md.tmp
+echo "" >> docs/index.md.tmp
+echo "{% endraw %}" >> docs/index.md.tmp
 
 # Fix relative links for GitHub Pages context
 # When in docs/index.md, we're at the root of the site, so:

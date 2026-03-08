@@ -3,6 +3,7 @@ __pycache__/
 _site/
 docs/Gemfile.lock
 docs/.jekyll-cache/
+.sass-cache/
 *.pyc
 *.pyo
 *.egg-info/

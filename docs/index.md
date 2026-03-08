@@ -2,12 +2,10 @@
 layout: default
 title: Home
 ---
-
+{% raw %}
 # Pygments SOUL Lexer
 
 A [Pygments](https://pygments.org/) lexer for **SOUL** (System Online User Language), the 4GL language for Rocket Software's Model 204 database system.
-
-**🌟 [View Live Examples](./)** - See syntax highlighting in action!
 
 ## Installation
 
@@ -87,8 +85,6 @@ python verify_lexer.py              # Visual verification
 
 ## Examples
 
-**🎨 [View Live Syntax-Highlighted Examples](./)**
-
 Interactive HTML examples with syntax highlighting:
 - [Basic Syntax](examples/basic_syntax.html) - Variables, control flow
 - [Database Operations](examples/database_ops.html) - FIND, STORE, UPDATE, DELETE
@@ -96,6 +92,28 @@ Interactive HTML examples with syntax highlighting:
 - [Text Blocks](examples/text_blocks.html) - TEXT/HTML interpolation
 
 Source files available in `tests/examples/`.
+
+## GitHub Pages
+
+The project site is built with Jekyll and deployed automatically on push to `main`.
+
+**Prerequisites:** Ruby >= 3.0, Bundler (`gem install bundler`), and the package installed in dev mode (`pip install -e ".[dev]"`).
+
+**One-shot build** (mirrors the GitHub Action exactly):
+
+```bash
+bash scripts/build_docs.sh
+```
+
+Output is written to `./_site/`. Use this to verify the build before pushing.
+
+**Local server** (live-reloading, for reviewing and editing):
+
+```bash
+bash scripts/build_docs.sh --serve
+```
+
+Then open http://localhost:4000. The script runs `generate_examples.sh` and `copy_readme.sh` before each build, so the local output matches what the action produces.
 
 ## Project Structure
 
@@ -143,3 +161,5 @@ MIT License - see [LICENSE](LICENSE) file.
 - **GitHub:** https://github.com/nokout/pygments-soul-lexer
 - **Pygments:** https://pygments.org/
 - **Model 204 Wiki:** https://m204wiki.rocketsoftware.com/
+
+{% endraw %}
